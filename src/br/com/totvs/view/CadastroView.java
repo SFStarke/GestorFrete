@@ -498,7 +498,6 @@ public class CadastroView extends javax.swing.JFrame {
                             } 
                              freteModel.setProdutos(addFretes);
                                 connFrete.insert(freteModel);
-                                capacidadeFrete = 50.0f;
                         }
                     }
                 }
