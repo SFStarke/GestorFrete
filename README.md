@@ -13,7 +13,7 @@ Neste repositório há em anexo;
 ## Propósito do Sistema
 
 * Gestor cadastral para Frete.
-*O sistema precisa organizar despachos de entrega de acordo com a cubagem limite de cada caminhão que é de 50m³.
+* O sistema precisa organizar despachos de entrega de acordo com a cubagem limite do caminhão que é de 50m³.
 * Em cada caminhão, pode haver produtos diferentes.
  
 ## Requisitos necessários para o sistema
