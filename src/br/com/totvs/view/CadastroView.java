@@ -82,7 +82,7 @@ public class CadastroView extends javax.swing.JFrame {
                 arrayListProduto.add(p);
 
                 absoluto += Double.parseDouble(rs.getString(5));
-                double numeroCaminhao = Math.ceil(absoluto / 50);
+                double numeroCaminhao = Math.ceil(absoluto / 50.0f);
                 lblVolumeAbsoluto.setText("<html><Centre>O Volume Absoluto da lista é de: "
                         + new DecimalFormat(".###").format(absoluto) + " m³. Irá requerer "
                         + new DecimalFormat("").format(numeroCaminhao) + " caminhão(ões) para o(s) frete(s)</html>");
@@ -109,9 +109,7 @@ public class CadastroView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "ERRO AO LISTA HISTÓRICO DE FRETE>\n" + ex);
         }
         defaultList.removeAllElements(); // Impede Duplicação em JList
-        arrayHistorico.forEach((listHist) -> {
-            defaultList.addElement(listHist);
-        });
+        arrayHistorico.forEach((listHist) -> {defaultList.addElement(listHist);});
     }
 
     private void setTxtFields() {//Preenchimento dos campos txt. pela seleção na jTable
@@ -459,59 +457,61 @@ public class CadastroView extends javax.swing.JFrame {
 
     private void btnFreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFreteActionPerformed
 
-        String addFrete = "", addFretes = "";
-        ArrayList<String> ordenarFrete = new ArrayList();
+        String addFrete = "";
+        FreteModel freteModelApoio = new FreteModel();
+        double capacidadeFrete = 49.0f;
 
         try {
             ps = connected.prepareStatement(
                     "select id, item, caixa, volume, volume_total from produto"
             );
             rs = ps.executeQuery();
-
-            if (absoluto <= 50) { // Conteudo do BD Frete, para destinar elementos corretamente ao histórico.
-                while (rs.next()) {
-                    addFrete += "=> Lote nº [" + rs.getString(1) + "] ("+ rs.getString(3) +") Caixa(s) de "+ rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                }
-                freteModel.setProdutos(addFrete);
-                connFrete.insert(freteModel);
-
-            } else {
-                while (rs.next()) {
-                    double nFretes = rs.getDouble(5) / 50;
+            while (rs.next()) {
+                    double quantidadeFretes = rs.getDouble(5) / 49.9;
                     double nCaixas = rs.getInt(3);
-                    double vTot = rs.getDouble(5);
-                    double capacidadeFrete = 00.0f;
-
-                    if (vTot <= 50) {
-                        addFrete += "=> Lote nº [" + rs.getString(1) + "] ("+ rs.getString(3) +") Caixa(s) de "+ rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                        freteModel.setProdutos(addFrete);
-                    }
-                    
-                    if (vTot > 50 && nCaixas > 1) {
-                         capacidadeFrete = 50.0f;
-
-                        for (int i = 1; i <= Math.ceil(nFretes); i++) { //Repete nº de fretes necessários
-                            
-                            if (capacidadeFrete > rs.getDouble(4)) { 
-                                addFretes = "=> Lote nº [" + rs.getString(1) + "] ("+ rs.getString(3) +") Caixa(s) de "+ rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+            
+            for (int i = 1; i <= Math.ceil(quantidadeFretes); i++) { //Repete nº de fretes necessários
+ System.out.println("Capacidade 1: "+capacidadeFrete);
+                            if (capacidadeFrete > rs.getDouble(4)) {
+                                arrayLisFrete.removeAll(arrayLisFrete);
+                                // addFretes = "=> Lote nº [" + rs.getString(1) + "] ("+ rs.getString(3) +") Caixa(s) de "+ rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+                                addFrete += "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+                                freteModelApoio.setProdutos(addFrete);
+                                arrayLisFrete.add(freteModelApoio);
                                 capacidadeFrete -= rs.getDouble(4);
-                            } 
-                             freteModel.setProdutos(addFretes);
-                                connFrete.insert(freteModel);
-                        }
-                    }
-                }
+                                
+                            } else {
+                                for (FreteModel x : arrayLisFrete) {
+                                    freteModel.setProdutos(x.toString());
+                                    connFrete.insert(freteModel);
+                                }
+                                System.out.println("Capacidade 3: "+capacidadeFrete);
+                                arrayLisFrete.removeAll(arrayLisFrete);
+                                capacidadeFrete = 49.9f;
+                                addFrete = "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+                                freteModelApoio.setProdutos(addFrete);
+                                arrayLisFrete.add(freteModelApoio);
+                                capacidadeFrete -= rs.getDouble(4);
+
+                            }
+
+                        } // Fim do for "loop" da quantidade de fretes do mesmo lote"
+            }
+            
+            for (FreteModel x : arrayLisFrete) {
+                freteModel.setProdutos(x.toString());
                 connFrete.insert(freteModel);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "ERRO AO LISTAR FRETE...\n" + e);
         }
-        // arrayListFrete.forEach((listFrete) ->{System.out.println("Conteudo Collection <||> "+listFrete);} ); // teste imprime no console
+        
         connProduto.deleteAll();
         absoluto = 0.0f;
         listaHistorico(); // Envia conteudo de BD frete para JList "listaHistorico"
         CleanField();
         selectAll(); // Envia conteudo de produto em BD para JTable "Table"
+        
     }//GEN-LAST:event_btnFreteActionPerformed
 
     private void btnDeletHistoricoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletHistoricoActionPerformed

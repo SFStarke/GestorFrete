@@ -1,5 +1,7 @@
 package br.com.totvs.model;
 
+import java.util.Objects;
+
 /**
  *
  * @author Sérgio Felipe Starke
@@ -33,7 +35,7 @@ public class ProdutoModel {
 
     @Override
     public String toString() {
-        return "=> Lote nº ["+this.getId()+"]. "+this.getItem()+". ("+this.getCaixa()+") Caixa(s) de "+this.getVolume()+" m³ por caixa ||";
+        return "=> Lote nº ["+id+"] ("+caixa+") Caixa(s) de "+item+". "+volume+"m³ por caixa ||";
     }
 
     public int getId() {
@@ -76,4 +78,46 @@ public class ProdutoModel {
         this.volumeTotal = volumeTotal;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + this.id;
+        hash = 23 * hash + Objects.hashCode(this.item);
+        hash = 23 * hash + this.caixa;
+        hash = 23 * hash + (int) (Double.doubleToLongBits(this.volume) ^ (Double.doubleToLongBits(this.volume) >>> 32));
+        hash = 23 * hash + (int) (Double.doubleToLongBits(this.volumeTotal) ^ (Double.doubleToLongBits(this.volumeTotal) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ProdutoModel other = (ProdutoModel) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (this.caixa != other.caixa) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.volume) != Double.doubleToLongBits(other.volume)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.volumeTotal) != Double.doubleToLongBits(other.volumeTotal)) {
+            return false;
+        }
+        if (!Objects.equals(this.item, other.item)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }
