@@ -6,6 +6,7 @@ import java.sql.*;
 import br.com.totvs.controller.ConnectionController;
 import br.com.totvs.controller.FreteController;
 import br.com.totvs.model.FreteModel;
+import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class CadastroView extends javax.swing.JFrame {
         btnInsert.setEnabled(true);
         btnUpdate.setEnabled(false);
         btnDeleteOne.setEnabled(false);
+        txtQuantidadeCaixa.setEnabled(true);
         txtAltura.setEnabled(true);
         txtLargura.setEnabled(true);
         txtProfundidade.setEnabled(true);
@@ -81,11 +83,11 @@ public class CadastroView extends javax.swing.JFrame {
                 ProdutoModel p = new ProdutoModel(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDouble(4), rs.getDouble(5));
                 arrayListProduto.add(p);
 
-                absoluto += Double.parseDouble(rs.getString(5));
+                absoluto += rs.getDouble(5);
                 double numeroCaminhao = Math.ceil(absoluto / 50.0f);
                 lblVolumeAbsoluto.setText("<html><Centre>O Volume Absoluto da lista é de: "
-                        + new DecimalFormat(".###").format(absoluto) + " m³. Irá requerer "
-                        + new DecimalFormat("").format(numeroCaminhao) + " caminhão(ões) para o(s) frete(s)</html>");
+                        + new DecimalFormat(".###").format(absoluto) + " m³. Dependendo da disposição dos itens, Irá requerer de "
+                        + new DecimalFormat("").format(numeroCaminhao) + " ou mais caminhão(ões) para o(s) frete(s)</html>");
             }
 
         } catch (SQLException e) {
@@ -116,9 +118,10 @@ public class CadastroView extends javax.swing.JFrame {
         int spot = Table.getSelectedRow();//Estabelece posição"valor" do cliente selecionado.
         txtId.setText(Table.getModel().getValueAt(spot, 0).toString());
         txtItem.setText(Table.getModel().getValueAt(spot, 1).toString());
-        txtQuantidadeCaixa.setText(Table.getModel().getValueAt(spot, 2).toString());
+       // txtQuantidadeCaixa.setText(Table.getModel().getValueAt(spot, 2).toString());
 
         btnInsert.setEnabled(false);
+        txtQuantidadeCaixa.setEnabled(false);
         txtAltura.setEnabled(false);
         txtLargura.setEnabled(false);
         txtProfundidade.setEnabled(false);
@@ -348,9 +351,8 @@ public class CadastroView extends javax.swing.JFrame {
                                                 .addComponent(btnUpdate)))))
                                 .addGap(13, 91, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(lblVolumeAbsoluto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(lblVolumeAbsoluto, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnFrete, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(11, 11, 11))
@@ -377,12 +379,6 @@ public class CadastroView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblVolumeAbsoluto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnFrete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(txtItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -408,11 +404,18 @@ public class CadastroView extends javax.swing.JFrame {
                             .addComponent(txtProfundidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5)
                             .addComponent(jLabel8)
-                            .addComponent(btnDeleteOne))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(jLabel10)
+                            .addComponent(btnDeleteOne))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
+                        .addComponent(jLabel10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnFrete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblVolumeAbsoluto, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 17, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDeletHistorico)
                 .addContainerGap())
@@ -422,24 +425,32 @@ public class CadastroView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-
-        if ((txtItem.getText().equals("")) || (txtQuantidadeCaixa.getText().equals(""))
-                || (txtAltura.getText().equals("")) || (txtLargura.getText().equals("")) || (txtProfundidade.getText().equals(""))) {
-            JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos...");
-        } else {
+        
+        try {
             double altura = Double.parseDouble(txtAltura.getText());
             double largura = Double.parseDouble(txtLargura.getText());
             double profundidade = Double.parseDouble(txtProfundidade.getText());
 
-            produtoModel.setItem(txtItem.getText());
-            produtoModel.setCaixa(Integer.parseInt(txtQuantidadeCaixa.getText()));
-            produtoModel.setVolume((altura * largura * profundidade) / 1000000);
+            if ((txtItem.getText().equals("")) || (txtQuantidadeCaixa.getText().equals(""))
+                    || (txtAltura.getText().equals("")) || (txtLargura.getText().equals("")) || (txtProfundidade.getText().equals(""))) {
+                JOptionPane.showMessageDialog(null, "Todos os campos devem ser preenchidos...");
+            } else {
 
-            connProduto.insert(produtoModel);
-            absoluto = 0.0f;
-            CleanField();
-            selectAll(); // Envia conteudo de produto em BD para JTable "Table"
+                produtoModel.setItem(txtItem.getText());
+                produtoModel.setCaixa(Integer.parseInt(txtQuantidadeCaixa.getText()));
+                produtoModel.setVolume((altura * largura * profundidade) / 1000000);
+
+                connProduto.insert(produtoModel);
+                absoluto = 0.0f;
+                CleanField();
+                selectAll(); // Envia conteudo de produto em BD para JTable "Table"
+            }
+
+        } catch (HeadlessException | NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Os Campos: Quantidade de Caixa, Altura, Largura e Profundidade\n Devem ser preenchidos e apenas com números");
         }
+        
+        
 
     }//GEN-LAST:event_btnInsertActionPerformed
 
@@ -459,7 +470,8 @@ public class CadastroView extends javax.swing.JFrame {
 
         String addFrete = "";
         FreteModel freteModelApoio = new FreteModel();
-        double capacidadeFrete = 49.0f;
+        double capacidadeFrete = 49.9f;
+        double volumeOcupado = 0.0f;
 
         try {
             ps = connected.prepareStatement(
@@ -468,34 +480,32 @@ public class CadastroView extends javax.swing.JFrame {
             rs = ps.executeQuery();
             while (rs.next()) {
                     double quantidadeFretes = rs.getDouble(5) / 49.9;
-                    double nCaixas = rs.getInt(3);
             
-            for (int i = 1; i <= Math.ceil(quantidadeFretes); i++) { //Repete nº de fretes necessários
- System.out.println("Capacidade 1: "+capacidadeFrete);
-                            if (capacidadeFrete > rs.getDouble(4)) {
-                                arrayLisFrete.removeAll(arrayLisFrete);
-                                // addFretes = "=> Lote nº [" + rs.getString(1) + "] ("+ rs.getString(3) +") Caixa(s) de "+ rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                                addFrete += "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                                freteModelApoio.setProdutos(addFrete);
-                                arrayLisFrete.add(freteModelApoio);
-                                capacidadeFrete -= rs.getDouble(4);
-                                
-                            } else {
-                                for (FreteModel x : arrayLisFrete) {
-                                    freteModel.setProdutos(x.toString());
-                                    connFrete.insert(freteModel);
-                                }
-                                System.out.println("Capacidade 3: "+capacidadeFrete);
-                                arrayLisFrete.removeAll(arrayLisFrete);
-                                capacidadeFrete = 49.9f;
-                                addFrete = "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                                freteModelApoio.setProdutos(addFrete);
-                                arrayLisFrete.add(freteModelApoio);
-                                capacidadeFrete -= rs.getDouble(4);
+                for (int i = 1; i <= Math.ceil(quantidadeFretes); i++) { //Repete nº de fretes necessários
+                    volumeOcupado += rs.getDouble(5);
+                    
+                    if (capacidadeFrete > volumeOcupado ) {
+                        arrayLisFrete.removeAll(arrayLisFrete);
+                        addFrete += "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+                        freteModelApoio.setProdutos(addFrete);
+                        arrayLisFrete.add(freteModelApoio);
 
-                            }
+                    } else {
+                        volumeOcupado = 0.0f;
+                        
+                        for (FreteModel x : arrayLisFrete) {
+                            freteModel.setProdutos(x.toString());
+                            connFrete.insert(freteModel);
+                        }
+                        arrayLisFrete.removeAll(arrayLisFrete);
+                       
+                        addFrete = "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
+                        freteModelApoio.setProdutos(addFrete);
+                        arrayLisFrete.add(freteModelApoio);
+                        volumeOcupado += rs.getDouble(5);
+                    }
 
-                        } // Fim do for "loop" da quantidade de fretes do mesmo lote"
+                } // Fim do for "loop" da quantidade de fretes do mesmo lote"
             }
             
             for (FreteModel x : arrayLisFrete) {
@@ -532,15 +542,13 @@ public class CadastroView extends javax.swing.JFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         String item = txtItem.getText();
-        int caixa = Integer.parseInt(txtQuantidadeCaixa.getText());
         int id = Integer.parseInt(txtId.getText());
         produtoModel.setItem(item);
-        produtoModel.setCaixa(caixa);
-
         connProduto.update(produtoModel, id);
 
         CleanField();
         selectAll(); // Envia conteudo de produto em BD para JTable "Table"
+        lblVolumeAbsoluto.setText("Item selecionado, foi atualizado com sucesso...");
 
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -554,6 +562,8 @@ public class CadastroView extends javax.swing.JFrame {
 
         CleanField();
         selectAll(); // Envia conteudo de produto em BD para JTable "Table"
+        lblVolumeAbsoluto.setText("Item selecionado, foi excluido com sucesso...");
+        
     }//GEN-LAST:event_btnDeleteOneActionPerformed
 
     /**

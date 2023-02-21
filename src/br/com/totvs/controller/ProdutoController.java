@@ -51,22 +51,21 @@ public class ProdutoController {
         }
     }
 
-	public boolean update(ProdutoModel get, int idItem) {
+    public boolean update(ProdutoModel get, int idItem) {
         try {
             ps = conn.prepareStatement(
-                    "update produto set item=?, caixa=? where id=?;"
-            ); 
+                    "update produto set item=? where id=?;"
+            );
             ps.setString(1, get.getItem());
-            ps.setInt(2, get.getCaixa());
-            ps.setInt(3, idItem);
+            ps.setInt(2, idItem);
             ps.execute();
             return true;
         } catch (SQLException e) {
-    JOptionPane.showMessageDialog(null, "ERRO NA ATUALIZAÇÃO DO PRODUTO...\n"+e);
+            JOptionPane.showMessageDialog(null, "ERRO NA ATUALIZAÇÃO DO PRODUTO...\n" + e);
             return false;
         }
-      }
-    
+    }
+
     public boolean deleteAll() {
         try {
             ps = conn.prepareStatement("delete from produto");
@@ -77,8 +76,8 @@ public class ProdutoController {
             return false;
         }
     }
-    
-     public boolean deleteOne(int idItem) {
+
+    public boolean deleteOne(int idItem) {
         try {
             ps = conn.prepareStatement("delete from produto where id=?");
             ps.setInt(1, idItem);
