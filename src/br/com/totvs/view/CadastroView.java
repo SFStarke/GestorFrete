@@ -30,7 +30,7 @@ public class CadastroView extends javax.swing.JFrame {
     ProdutoModel produtoModel = new ProdutoModel();
     ArrayList<ProdutoModel> arrayListProduto = new ArrayList<>();
     FreteModel freteModel = new FreteModel();
-    ArrayList<FreteModel> arrayLisFrete = new ArrayList<>();
+    ArrayList<FreteModel> arrayListFrete = new ArrayList<>();
 
     DefaultTableModel defaultTable = new DefaultTableModel();
     DefaultListModel defaultList = new DefaultListModel();
@@ -470,45 +470,23 @@ public class CadastroView extends javax.swing.JFrame {
 
         String addFrete = "";
         FreteModel freteModelApoio = new FreteModel();
+        ArrayList<ProdutoModel> arrayListProd = new ArrayList<>();
         double capacidadeFrete = 49.9f;
         double volumeOcupado = 0.0f;
-
+        arrayListProd.removeAll(arrayListProd);
+        
         try {
             ps = connected.prepareStatement(
                     "select id, item, caixa, volume, volume_total from produto"
             );
             rs = ps.executeQuery();
             while (rs.next()) {
-                    double quantidadeFretes = rs.getDouble(5) / 49.9;
-            
-                for (int i = 1; i <= Math.ceil(quantidadeFretes); i++) { //Repete nº de fretes necessários
-                    volumeOcupado += rs.getDouble(5);
-                    
-                    if (capacidadeFrete > volumeOcupado ) {
-                        arrayLisFrete.removeAll(arrayLisFrete);
-                        addFrete += "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                        freteModelApoio.setProdutos(addFrete);
-                        arrayLisFrete.add(freteModelApoio);
-
-                    } else {
-                        volumeOcupado = 0.0f;
-                        
-                        for (FreteModel x : arrayLisFrete) {
-                            freteModel.setProdutos(x.toString());
-                            connFrete.insert(freteModel);
-                        }
-                        arrayLisFrete.removeAll(arrayLisFrete);
-                       
-                        addFrete = "=> Lote nº [" + rs.getString(1) + "] (" + rs.getString(3) + ") Caixa(s) de " + rs.getString(2) + ". " + rs.getString(4) + "m³ por caixa ||";
-                        freteModelApoio.setProdutos(addFrete);
-                        arrayLisFrete.add(freteModelApoio);
-                        volumeOcupado += rs.getDouble(5);
-                    }
-
-                } // Fim do for "loop" da quantidade de fretes do mesmo lote"
+                // int id, String item, int caixa, double volume, double volumeTotal
+                ProdutoModel prod = new ProdutoModel(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getDouble(4),rs.getDouble(5));
+                arrayListProd.add(prod);
             }
             
-            for (FreteModel x : arrayLisFrete) {
+            for (FreteModel x : arrayListFrete) {
                 freteModel.setProdutos(x.toString());
                 connFrete.insert(freteModel);
             }
@@ -516,7 +494,7 @@ public class CadastroView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "ERRO AO LISTAR FRETE...\n" + e);
         }
         
-        connProduto.deleteAll();
+      //  connProduto.deleteAll();
         absoluto = 0.0f;
         listaHistorico(); // Envia conteudo de BD frete para JList "listaHistorico"
         CleanField();
