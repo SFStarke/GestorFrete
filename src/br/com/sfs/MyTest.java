@@ -14,11 +14,11 @@ public class MyTest {
     /*       C L A S S E  M A I N   P A R A   T E S T A R
      *           L Ó G I C A   D E   C Ó D I G O S            */
     public static void main(String args[]) {
-    ConnectionController connControl = new ConnectionController();
-    Connection connected = null;
-    PreparedStatement ps = null;
+//    ConnectionController connControl = new ConnectionController();
+//    Connection connected = null;
+//    PreparedStatement ps = null;
         ProdutoController pc = new ProdutoController();
-        ArrayList <ProdutoController> arrayPc = new ArrayList();
+//        ArrayList <ProdutoController> arrayPc = new ArrayList();
         
         System.out.println("do PC: "+pc.selectAll());
         

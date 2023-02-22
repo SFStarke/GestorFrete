@@ -10,6 +10,7 @@ import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -66,7 +67,7 @@ public class CadastroView extends javax.swing.JFrame {
     }
 
     public void selectAll() { // Envia conteudo de produto em BD para JTable "Table"
-
+        absoluto = 0.0f;
         try {
             ps = connected.prepareStatement(
                     "select id, item, caixa, volume, volume_total from produto"
@@ -471,10 +472,11 @@ public class CadastroView extends javax.swing.JFrame {
         String addFrete = "";
         FreteModel freteModelApoio = new FreteModel();
         ArrayList<ProdutoModel> arrayListProd = new ArrayList<>();
-        double capacidadeFrete = 49.9f;
+        double capacidadeFrete = 50.0f;
         double volumeOcupado = 0.0f;
         arrayListProd.removeAll(arrayListProd);
-        
+        arrayListFrete.removeAll(arrayListFrete);
+
         try {
             ps = connected.prepareStatement(
                     "select id, item, caixa, volume, volume_total from produto"
@@ -482,20 +484,38 @@ public class CadastroView extends javax.swing.JFrame {
             rs = ps.executeQuery();
             while (rs.next()) {
                 // int id, String item, int caixa, double volume, double volumeTotal
-                ProdutoModel prod = new ProdutoModel(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getDouble(4),rs.getDouble(5));
+                ProdutoModel prod = new ProdutoModel(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getDouble(4), rs.getDouble(5));
                 arrayListProd.add(prod);
-            }
-            
-            for (FreteModel x : arrayListFrete) {
-                freteModel.setProdutos(x.toString());
-                connFrete.insert(freteModel);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "ERRO AO LISTAR FRETE...\n" + e);
         }
-        
-      //  connProduto.deleteAll();
-        absoluto = 0.0f;
+
+        do { // Looping enquanto houver elemento em collection
+            Predicate<ProdutoModel> p = (x)->{return x.getVolumeTotal() < capacidadeFrete;};
+            //System.out.println(p.test(arrayListProd.get(0)));
+            
+// I M P L E M E N T A R   L Ó G I C A   A   P A R T I R   D A Q U I
+            if(p.test(arrayListProd.get(0))== true){
+                addFrete = arrayListProd.toString();
+            }
+           
+            
+            //addFrete = arrayListProd.toString(); // Adiciono Elemento
+
+            arrayListProd.remove(0); // Removo Elemento pelo Index
+            boolean res = arrayListProd.isEmpty(); // Encerra looping quando collection vazia.
+        } while (false);
+
+        freteModel.setProdutos(addFrete);
+        arrayListFrete.add(freteModel);
+
+        for (FreteModel x : arrayListFrete) {
+            freteModel.setProdutos(x.toString());
+            connFrete.insert(freteModel);
+        }
+
+        //     connProduto.deleteAll();
         listaHistorico(); // Envia conteudo de BD frete para JList "listaHistorico"
         CleanField();
         selectAll(); // Envia conteudo de produto em BD para JTable "Table"
