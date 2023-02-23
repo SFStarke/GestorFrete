@@ -10,7 +10,11 @@ import java.awt.HeadlessException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -472,8 +476,9 @@ public class CadastroView extends javax.swing.JFrame {
         String addFrete = "";
         FreteModel freteModelApoio = new FreteModel();
         ArrayList<ProdutoModel> arrayListProd = new ArrayList<>();
-        double capacidadeFrete = 50.0f;
+        final double capacidadeFrete = 50.0f;
         double volumeOcupado = 0.0f;
+        int indexProduto = 0;
         arrayListProd.removeAll(arrayListProd);
         arrayListFrete.removeAll(arrayListFrete);
 
@@ -492,18 +497,16 @@ public class CadastroView extends javax.swing.JFrame {
         }
 
         do { // Looping enquanto houver elemento em collection
-            Predicate<ProdutoModel> p = (x)->{return x.getVolumeTotal() < capacidadeFrete;};
-            //System.out.println(p.test(arrayListProd.get(0)));
-            
-// I M P L E M E N T A R   L Ó G I C A   A   P A R T I R   D A Q U I
-            if(p.test(arrayListProd.get(0))== true){
-                addFrete = arrayListProd.toString();
+            // Predicate<ProdutoModel> quantidadeProduto = (x)->{return x.getVolumeTotal() < capacidadeFrete;}; //Lambda, quantidade suportada para frete
+            // Consumer<ProdutoModel> quantidadeProduto = (x)->{x.getVolumeTotal();};
+            Function<ProdutoModel, Double> quantidadeProduto = x -> x.getVolumeTotal(); // Lambda retorna volume total do produto.
+
+            if (quantidadeProduto.apply(arrayListProd.get(indexProduto)) < capacidadeFrete) {
+                addFrete += arrayListProd.toString(); // Adiciono Elemento
+                arrayListProd.remove(indexProduto); // Removo Elemento pelo Index
+                
             }
            
-            
-            //addFrete = arrayListProd.toString(); // Adiciono Elemento
-
-            arrayListProd.remove(0); // Removo Elemento pelo Index
             boolean res = arrayListProd.isEmpty(); // Encerra looping quando collection vazia.
         } while (false);
 
