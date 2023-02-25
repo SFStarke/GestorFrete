@@ -497,18 +497,35 @@ public class CadastroView extends javax.swing.JFrame {
         }
 
         do { // Looping enquanto houver elemento em collection
-            // Predicate<ProdutoModel> quantidadeProduto = (x)->{return x.getVolumeTotal() < capacidadeFrete;}; //Lambda, quantidade suportada para frete
-            // Consumer<ProdutoModel> quantidadeProduto = (x)->{x.getVolumeTotal();};
-            Function<ProdutoModel, Double> quantidadeProduto = x -> x.getVolumeTotal(); // Lambda retorna volume total do produto.
-
-            if (quantidadeProduto.apply(arrayListProd.get(indexProduto)) < capacidadeFrete) {
-                addFrete += arrayListProd.toString(); // Adiciono Elemento
-                arrayListProd.remove(indexProduto); // Removo Elemento pelo Index
-                
-            }
+           // int index = arrayListProd.;
+           Function<ProdutoModel, String> obterIndex = i ->  i.getItem();
            
-            boolean res = arrayListProd.isEmpty(); // Encerra looping quando collection vazia.
-        } while (false);
+           /*
+           C E N Á R I O  &  P R O P O S T A   P A R A   L  Ó G I C A 
+[Paradóxo Index] Para obter index em collection, requer outro parametro da mesma, que
+por sua vez, requer seu index.
+           
+[Proposta] Criar vetor contendo números da ordem equivalentes ao tamanho da collection.
+Servirá por referência para obter volumeTotal.
+           
+[Do While] Mudar lógica de modo para não exclusão de elementos em collection.
+ 
+                            S I N T A X E S   A D O T A D A S
+          Function<ProdutoModel, String> obterIndex = i -> i.getItem(); // Obter nº de index pelo nome do produto.
+          String nomeProduto = obterIndex.apply(arrayListProd.get(indexProduto)); // Nome para Index
+                  indexProduto = arrayListProd.indexOf(nomeProduto);
+Predicate<ProdutoModel> quantidadeProduto = (x)->{return x.getVolumeTotal() < capacidadeFrete;}; //Lambda, quantidade suportada para frete
+          Consumer<ProdutoModel> quantidadeProduto = (x)->{x.getVolumeTotal();};
+               
+             Function<ProdutoModel, Double> volumeTotalLambda = x -> x.getVolumeTotal(); // Lambda retorna volume total do produto.
+             Double volumeTotal = volumeTotalLambda.apply(arrayListProd.get(indexProduto));
+           */
+           
+            System.out.println(); 
+            addFrete += arrayListProd.toString(); // Adiciono Elemento
+            arrayListProd.remove(indexProduto); // Removo Elemento pelo Index
+
+        } while (arrayListProd.size() > 1); //! arrayListProd.isEmpty()
 
         freteModel.setProdutos(addFrete);
         arrayListFrete.add(freteModel);
